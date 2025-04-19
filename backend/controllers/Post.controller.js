@@ -7,9 +7,11 @@ const { Types } = require("mongoose");
 const Like = require("../models/Like.js");
 const createPost = async (req, res) => {
   try {
-    const { text, poll, category } = req.body;
+    const { text, poll, category,userFullName } = req.body;
     const imageLocalPath = req.file?.path;
-
+    if (!userFullName){
+      return res.status(400).json({ error: "User full name is required" });
+    }
     if (!(text || poll || imageLocalPath)) {
       return res.status(400).json({ error: "Need either text, poll or image to create post" });
     }
@@ -28,6 +30,7 @@ const createPost = async (req, res) => {
     
     const postData = {
       user: req.user,
+      userFullName,
       text: text || null,
       category: category || 'all'
     };
@@ -142,12 +145,16 @@ const likePost = async (req, res) => {
 const addComment = async (req, res) => {
   try {
    
-    const { text } = req.body;
+    const { text,userFullName } = req.body;
+    if (!userFullName){
+      return res.status(400).json({ error: "User full name is required" });
+    }
     const post = await Post.findById(req.params.id);
     if (!post) return res.status(404).json({ error: "Post not found" });
 
     const comment = new Comment({
       user: req.user,
+      userFullName,
       post: post._id,
       text
     });
@@ -173,12 +180,16 @@ const addComment = async (req, res) => {
 
 const addReply = async (req, res) => {
   try {
-    const { text } = req.body;
+    const { text ,userFullName} = req.body;
+    if (!userFullName){
+      return res.status(400).json({ error: "User full name is required" });
+    }
     const comment = await Comment.findById(req.params.commentId);
     if (!comment) return res.status(404).json({ error: "Comment not found" });
 
     const reply = new Reply({
       user: req.user,
+      userFullName,
       comment: comment._id,
       text
     });

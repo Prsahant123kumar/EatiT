@@ -9,6 +9,7 @@ const PollOptionSchema = new mongoose.Schema({
 
 const PostSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'UserAuth', required: true },
+  userFullName: { type: String, required: true },
   text: String,
   images: { url: String, publicId: String },
   poll: {
