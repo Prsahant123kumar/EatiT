@@ -42,7 +42,7 @@ const sendWelcomeEmail = expressAsyncHandler(async (email, name) => {
   var mailOptions = {
     from: process.env.SMTP_MAIL,
     to: email,
-    subject: 'Welcome to CodeWithMe',
+    subject: 'Welcome to EatiT',
     html: htmlContent,
     template_variables: {
       company_info_name: "CodeWithMe",
