@@ -1,63 +1,110 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const InformationSchema = new mongoose.Schema(
+const InformationSchema = new Schema(
   {
-    fullname: {
+    fullName: {
       type: String,
       required: true,
       trim: true,
     },
-    Age: {
-      type: Number,
+    dateOfBirth: {
+      type: Date,
       required: true,
-      min: 1,
-      max: 120,
+      validate: {
+        validator: function(value) {
+          const now = new Date();
+          const oldestDate = new Date(now.getFullYear() - 120, now.getMonth(), now.getDate());
+          return value <= now && value >= oldestDate;
+        },
+        message: "Date of birth must be in the past and within 120 years."
+      }
     },
-    Gender: {
+    gender: {
       type: String,
       enum: ["Male", "Female", "Other"],
       required: true,
     },
-    Height: {
-      type: String, // Example: "5'8\"" or "172 cm"
+    heightCm: {
+      type: Number,
       required: true,
+      min: 30, // cm
+      max: 300,
     },
-    Purpose: {
-      type: String, // Example: "Weight Loss", "Muscle Gain", etc.
+    weightKg: {
+      type: Number,
       required: true,
+      min: 1, // kg
+      max: 500,
     },
-    Allerggies: {
-      type: [String], // Example: ["Peanuts", "Lactose"]
+    purposes: {
+      type: [String],
+      enum: [
+        "Fitness Tracking",
+        "Health Monitoring",
+        "Diet/Nutrition Planning",
+        "Weight Management",
+        "Medical Condition Management",
+        "Physical Activity Management",
+        "Research Purpose"
+      ],
       default: [],
     },
-    Dieases: {
-      type: [String], // Example: ["Diabetes", "Hypertension"]
-      default: [],
+    
+    allergies: {
+      type: [String],
+      enum: ["Nuts", "Dairy", "Gluten", "Seafood", "Pollen", "Latex", "None"],
+      default: ["None"],
     },
-    Health_Goals: {
-      type: [String], // Example: ["Lose 10kg", "Build endurance"]
-      default: [],
+    diseases: {
+      type: [String],
+      enum: [
+        "Diabetes",
+        "Hypertension",
+        "Heart Disease",
+        "Asthma",
+        "Thyroid Disorder",
+        "None",
+        "Other"
+      ],
+      default: ["None"],
     },
-    Dietary_Preference: {
+    otherDisease: {
       type: String,
-      enum: ["Vegan", "Vegetarian", "Non-Vegetarian", "Keto", "Other"],
+      trim: true,
+    },
+    healthGoal: {
+      type: String,
+      enum: [
+        "Gain Weight",
+        "Maintain Weight",
+        "Weight Loss",
+        "Improve Muscle Tone",
+        "Increase Stamina",
+        "Improve Overall Health"
+      ],
       required: true,
     },
-    Additional_Information: {
+    dietPreference: {
       type: String,
-      maxlength: 500,
+      enum: ["Vegetarian", "Vegan", "Pescatarian", "Omnivore", "Keto", "Paleo", "None"],
+      required: true,
     },
-    authId: [
+    image: { url: String, publicId: String },
+    documents: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserAuth",
-        required: true,
-      },
+        filename: String,
+        url: String,
+        uploadedAt: { type: Date, default: Date.now }
+      }
     ],
+    authId: {
+      type: Schema.Types.ObjectId,
+      ref: "UserAuth",
+      required: true,
+    }
   },
   { timestamps: true }
 );
 
-const Information = mongoose.model("Information", InformationSchema);
-
-module.exports = { Information };
+module.exports = mongoose.model("Information", InformationSchema);
