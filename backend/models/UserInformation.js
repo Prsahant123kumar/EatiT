@@ -91,13 +91,12 @@ const InformationSchema = new Schema(
       required: true,
     },
     image: { url: String, publicId: String },
-    documents: [
+    documents: 
       {
-        filename: String,
-        url: String,
+        type: String,
         uploadedAt: { type: Date, default: Date.now }
       }
-    ],
+    ,
     authId: {
       type: Schema.Types.ObjectId,
       ref: "UserAuth",
