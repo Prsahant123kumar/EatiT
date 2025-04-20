@@ -1,5 +1,6 @@
 const User = require("../models/UserInformation");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
+const {analyzeHealthFromImage} = require("./Analysis-Data.js")
 const EnterPersonaldetails = async (req, res) => {
   try {
     const {
@@ -74,6 +75,9 @@ const EnterPersonaldetails = async (req, res) => {
       authId,
     }
     if(imageData) PersonalData.image=imageData;
+    const analysisString=await analyzeHealthFromImage(imageData?.url);
+    if(analysisString) PersonalData.documents=analysisString;
+    console.log(analysisString)
     const newUser = await User.create(PersonalData);
 
     return res.status(201).json({
