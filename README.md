@@ -4,7 +4,7 @@
 [Youtube Demo Video](https://youtu.be/Wx9JdofD9Ec) This video demonstrates the key features and functionality of the Nutrition Assistant Application.
 
 ## PPT
-Access the presentation slides for this project [here](link-to-your-ppt).
+Access the presentation slides for this project [here](https://docs.google.com/presentation/d/1FGuRA-wZuFcZ5n6YJe-JwzqzvQpaHScsJMOFG_wIq3w/edit?usp=sharing).
 
 ## Overview
 This is a full-stack nutrition assistant application that helps users identify food items, get nutritional information, chat with a nutrition assistant, and share posts with the community. The application uses AI to analyze food images and provide nutritional data and healthier alternatives.
