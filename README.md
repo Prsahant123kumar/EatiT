@@ -1,7 +1,7 @@
 # Nutrition Assistant Application->
-
+[Built at Hack36](https://postimage.me/images/2025/04/19/built-at-hack36.png)
 ## Demo Video 
-[https://youtu.be/Wx9JdofD9Ec] This video demonstrates the key features and functionality of the Nutrition Assistant Application.
+[Youtube Demo Video](https://youtu.be/Wx9JdofD9Ec) This video demonstrates the key features and functionality of the Nutrition Assistant Application.
 
 ## PPT
 Access the presentation slides for this project [here](link-to-your-ppt).
