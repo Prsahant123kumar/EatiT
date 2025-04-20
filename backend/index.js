@@ -7,6 +7,7 @@ const http = require('http');
 const userRoute = require('./routes/User.Auth.routes.js');
 const userPersonalDetails = require('./routes/User.PersonalDetails.routes.js');
 const postRoute = require('./routes/Post.routes.js');
+const chatRoutes = require('./routes/chatRoutes');
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(cors({
 }));
 
 // API Routes
+app.use('/chat', chatRoutes);
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/profile', userPersonalDetails); // Fixed typo: "infromation" → "information"
 app.use('/api/v1/posts', postRoute);
