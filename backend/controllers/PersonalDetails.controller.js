@@ -75,9 +75,11 @@ const EnterPersonaldetails = async (req, res) => {
       authId,
     }
     if(imageData) PersonalData.image=imageData;
-    const analysisString=await analyzeHealthFromImage(imageData?.url);
-    if(analysisString) PersonalData.documents=analysisString;
-    console.log(analysisString)
+    if(imageData?.url) {
+      const analysisString=await analyzeHealthFromImage(imageData?.url);
+      if(analysisString) PersonalData.documents=analysisString;
+      console.log(analysisString)
+    }
     const newUser = await User.create(PersonalData);
 
     return res.status(201).json({
