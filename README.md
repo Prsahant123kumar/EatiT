@@ -1,7 +1,7 @@
 # Nutrition Assistant Application->
 
 ## Demo Video 
-Add your demo video link here. This video demonstrates the key features and functionality of the Nutrition Assistant Application.
+[https://youtu.be/Wx9JdofD9Ec] This video demonstrates the key features and functionality of the Nutrition Assistant Application.
 
 ## PPT
 Access the presentation slides for this project [here](link-to-your-ppt).
