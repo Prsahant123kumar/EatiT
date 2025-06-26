@@ -64,7 +64,7 @@ function Scan() {
 
     try {
       const response = await axios.post(
-        'http://localhost:3000/api/identify',
+        `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/identify`,
         formData,
         {
           headers: {

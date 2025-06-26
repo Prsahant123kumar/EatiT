@@ -62,7 +62,7 @@ const EnterPersonalDetails = ({ isEdit = false }) => {
       const fetchProfile = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:3000/api/v1/profile/me",
+            `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/profile/me`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -190,7 +190,7 @@ const EnterPersonalDetails = ({ isEdit = false }) => {
 
       if (isEdit) {
         const response = await axios.put(
-          "http://localhost:3000/api/v1/profile/Update-Personal-Details",
+          `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/profile/Update-Personal-Details`,
           formData,
           {
             headers: {
@@ -203,7 +203,7 @@ const EnterPersonalDetails = ({ isEdit = false }) => {
         toast.success("Profile updated successfully");
       } else {
         const response = await axios.post(
-          "http://localhost:3000/api/v1/profile/Enter-Personal-Details",
+          `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/profile/Enter-Personal-Details`,
           formData,
           {
             headers: {

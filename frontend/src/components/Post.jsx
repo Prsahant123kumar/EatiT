@@ -38,18 +38,18 @@ const Post = () => {
     const [isCreatingPoll, setIsCreatingPoll] = useState(false);
     const fileInputRef = useRef();
     const { user } = useUserStore();
-
+    // Add these states in both components
     const [showSharePopup, setShowSharePopup] = useState(false);
     const [sharePostId, setSharePostId] = useState(null);
     const { profile } = useHealthProfileStore();
     const fullname = profile?.fullName;
-
+    // Add this function in both components
     const handleShare = (postId) => {
         setSharePostId(postId);
         setShowSharePopup(true);
     };
 
-
+    // Add this function in both components
     const handleCopyLink = () => {
         const postUrl = `${window.location.origin}/posts/${sharePostId}`;
         navigator.clipboard.writeText(postUrl);
@@ -70,7 +70,7 @@ const Post = () => {
             poll: {
                 question: "",
                 options: ["", ""],
-                expiresIn: 7,
+                expiresIn: 7, // days
             },
         },
     });
@@ -78,6 +78,7 @@ const Post = () => {
     const pollQuestion = watch("poll.question");
     const pollOptions = watch("poll.options");
 
+    // Category icons mapping
     const categoryIcons = {
         all: <Utensils size={16} />,
         health: <Activity size={16} />,
@@ -87,6 +88,7 @@ const Post = () => {
         awareness: <Feather size={16} />
     };
 
+    // Category color mapping
     const categoryColors = {
         all: "from-green-500 to-teal-500",
         health: "from-blue-500 to-indigo-500",
@@ -96,12 +98,12 @@ const Post = () => {
         awareness: "from-teal-500 to-cyan-500"
     };
 
-
+    // Fetch posts
     const fetchPosts = async () => {
         try {
             setLoading(true);
             const response = await axios.get(
-                `http://localhost:3000/api/v1/posts${selectedCategory !== "all" ? `?category=${selectedCategory}` : ""}`,
+                `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts${selectedCategory !== "all" ? `?category=${selectedCategory}` : ""}`,
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -139,7 +141,7 @@ const Post = () => {
         fetchPosts();
     }, [selectedCategory, user?._id]);
 
-
+    // Create post
     const onSubmit = async (data) => {
         try {
             setLoading(true);
@@ -164,7 +166,7 @@ const Post = () => {
                 );
             }
 
-            await axios.post("http://localhost:3000/api/v1/posts", formData, {
+            await axios.post(`${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -185,10 +187,10 @@ const Post = () => {
         }
     };
 
-
+    // Like post
     const handleLike = async (postId) => {
         try {
-            await axios.post(`http://localhost:3000/api/v1/posts/${postId}/like`);
+            await axios.post(`${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/${postId}/like`);
             fetchPosts();
         } catch (error) {
             toast.error("Failed to like post");
@@ -196,7 +198,7 @@ const Post = () => {
         }
     };
 
-
+    // Add comment
     const handleAddComment = async (postId) => {
         if (!commentText.trim()) {
             toast.error("Comment cannot be empty");
@@ -204,7 +206,7 @@ const Post = () => {
         }
 
         try {
-            await axios.post(`http://localhost:3000/api/v1/posts/${postId}/comment`, { text: commentText, userFullName: fullname });
+            await axios.post(`${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/${postId}/comment`, { text: commentText, userFullName: fullname });
             setCommentText("");
             setShowCommentBox(null);
             fetchPosts();
@@ -214,7 +216,7 @@ const Post = () => {
         }
     };
 
-
+    // Add reply
     const handleAddReply = async (commentId) => {
         if (!replyText.trim()) {
             toast.error("Reply cannot be empty");
@@ -222,7 +224,7 @@ const Post = () => {
         }
 
         try {
-            await axios.post(`http://localhost:3000/api/v1/posts/comment/${commentId}/reply`, { text: replyText, userFullName: fullname });
+            await axios.post(`${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/comment/${commentId}/reply`, { text: replyText, userFullName: fullname });
             setReplyText("");
             setReplyingTo(null);
             fetchPosts();
@@ -232,12 +234,12 @@ const Post = () => {
         }
     };
 
-
+    // Vote on poll
     const handleVote = async (postId, optionIndex) => {
         const currentPosts = [...posts];
 
         try {
-
+            // Optimistic UI update
             setPosts((prevPosts) =>
                 prevPosts.map((post) => {
                     if (post._id !== postId || !post.poll) return post;
@@ -279,13 +281,14 @@ const Post = () => {
                 })
             );
 
-
+            // Send vote to the server
             const response = await axios.post(
-                `http://localhost:3000/api/v1/posts/${postId}/vote`,
+                `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/${postId}/vote`,
                 { optionIndex },
                 { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
             );
 
+            // Update UI with server response
             if (response.data) {
                 setPosts((prevPosts) =>
                     prevPosts.map((post) => {
@@ -309,7 +312,7 @@ const Post = () => {
                 );
             }
         } catch (error) {
-
+            // Rollback to previous state on error
             setPosts(currentPosts);
             const errorMessage = error.response?.data?.error || "Failed to vote";
             toast.error(errorMessage);
@@ -317,6 +320,7 @@ const Post = () => {
         }
     };
 
+    // Handle image preview
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -338,7 +342,7 @@ const Post = () => {
         };
     }, [imagePreview]);
 
-
+    // Add poll option
     const addPollOption = () => {
         if (pollOptions.length >= 4) {
             toast.info("Maximum 4 options allowed");
@@ -347,6 +351,7 @@ const Post = () => {
         setValue("poll.options", [...pollOptions, ""]);
     };
 
+    // Remove poll option
     const removePollOption = (index) => {
         if (pollOptions.length <= 2) {
             toast.info("Minimum 2 options required");
@@ -359,7 +364,7 @@ const Post = () => {
 
     const categories = ["all", "health", "nutrition", "exercise", "diet", "awareness"];
 
-
+    // Format post date
     const formatPostDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
@@ -373,7 +378,7 @@ const Post = () => {
 
     return (
         <div className="max-w-2xl mx-auto p-4 space-y-6 bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
-
+            {/* Header */}
             <div className="bg-white rounded-2xl shadow-md p-5 border-b-4 border-green-500">
                 <div className="flex items-center justify-between mb-2">
                     <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-teal-500 bg-clip-text text-transparent">
@@ -388,10 +393,11 @@ const Post = () => {
                 <p className="text-gray-600 text-sm">Share your healthy meals, nutrition tips, and fitness journey</p>
             </div>
 
+            {/* Create Post Form */}
             <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 p-6 border-l-4 border-green-500">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="flex items-start space-x-4">
-
+                        {/* User Avatar */}
                         <div className="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-md">
                             {fullname?.[0]?.toUpperCase() || 'U'}
                         </div>
@@ -404,6 +410,7 @@ const Post = () => {
                                 rows={3}
                             />
 
+                            {/* Image Preview */}
                             {imagePreview && (
                                 <div className="relative mt-3 group">
                                     <img
@@ -425,6 +432,7 @@ const Post = () => {
                                 </div>
                             )}
 
+                            {/* Poll Creation */}
                             {isCreatingPoll && (
                                 <div className="mt-4 p-5 bg-gradient-to-br from-green-50 to-teal-50 rounded-xl border border-green-100 shadow-sm">
                                     <h3 className="font-medium text-green-800 mb-3">Create a Nutrition Poll</h3>
@@ -478,6 +486,7 @@ const Post = () => {
                                 </div>
                             )}
 
+                            {/* Action Buttons */}
                             <div className="flex items-center justify-between pt-4 border-t mt-4 gap-2">
                                 <div className="flex items-center space-x-4">
                                     <label className="cursor-pointer text-gray-600 hover:text-green-600 transition-colors duration-200 flex items-center space-x-2 bg-gray-50 hover:bg-green-50 px-3 py-2 rounded-lg">

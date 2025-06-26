@@ -38,49 +38,48 @@ const DisplayPost = () => {
         all: <Utensils size={18} />
     };
 
-    const fetchPost = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get(
-                `http://localhost:3000/api/v1/posts/${postId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                }
-            );
-
-
-            const transformedPost = {
-                ...response.data,
-                isLiked: response.data.likedBy?.includes(user?._id) || false,
-                poll: response.data.poll ? {
-                    ...response.data.poll,
-                    expiresAt: new Date(response.data.poll.expiresAt),
-                    hasVoted: response.data.poll.votedBy?.includes(user?._id) || false,
-                    selectedOption: response.data.poll.options.findIndex(opt =>
-                        opt.votedBy?.includes(user?._id)
-                    ),
-                    options: response.data.poll.options.map(opt => ({
-                        ...opt,
-                        percentage: response.data.poll.totalVotes > 0
-                            ? Math.round((opt.votes / response.data.poll.totalVotes) * 100)
-                            : 0
-                    }))
-                } : null,
-            };
-
-            setPost(transformedPost);
-        } catch (error) {
-            toast.error("Failed to fetch post");
-            console.error("Fetch post error:", error);
-            navigate("/posts");
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                const response = await axios.get(
+                    `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/${postId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        },
+                    }
+                );
+
+
+                const transformedPost = {
+                    ...response.data,
+                    isLiked: response.data.likedBy?.includes(user?._id) || false,
+                    poll: response.data.poll ? {
+                        ...response.data.poll,
+                        expiresAt: new Date(response.data.poll.expiresAt),
+                        hasVoted: response.data.poll.votedBy?.includes(user?._id) || false,
+                        selectedOption: response.data.poll.options.findIndex(opt =>
+                            opt.votedBy?.includes(user?._id)
+                        ),
+                        options: response.data.poll.options.map(opt => ({
+                            ...opt,
+                            percentage: response.data.poll.totalVotes > 0
+                                ? Math.round((opt.votes / response.data.poll.totalVotes) * 100)
+                                : 0
+                        }))
+                    } : null,
+                };
+
+                setPost(transformedPost);
+            } catch (error) {
+                toast.error("Failed to fetch post");
+                console.error("Fetch post error:", error);
+                navigate("/posts");
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchPost();
     }, [postId]);
 
@@ -88,7 +87,7 @@ const DisplayPost = () => {
     const handleLike = async () => {
         try {
             await axios.post(
-                `http://localhost:3000/api/v1/posts/${postId}/like`,
+                `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/${postId}/like`,
                 {},
                 {
                     headers: {
@@ -156,7 +155,7 @@ const DisplayPost = () => {
 
 
             const response = await axios.post(
-                `http://localhost:3000/api/v1/posts/${postId}/vote`,
+                `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/${postId}/vote`,
                 { optionIndex },
                 {
                     headers: {
@@ -194,13 +193,9 @@ const DisplayPost = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:3000/api/v1/posts/${postId}/comment`,
-                { text: commentText, userFullName: fullname },
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                }
+                `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/${postId}/comment`,
+                { text: commentText },
+                { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }}
             );
 
             setPost(prev => ({
@@ -219,7 +214,7 @@ const DisplayPost = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:3000/api/v1/posts/comment/${commentId}/reply`,
+                `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/posts/comment/${commentId}/reply`,
                 { text: replyText, userFullName: fullname },
                 {
                     headers: {

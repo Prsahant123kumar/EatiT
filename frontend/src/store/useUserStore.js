@@ -3,7 +3,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 import axios from "axios";
 import { toast } from "sonner";
 
-const API_END_POINT = "http://localhost:3000/api/v1/user"; 
+const API_END_POINT = `${import.meta.env.VITE_URL || 'http://localhost:3000'}/api/v1/user`; 
 axios.defaults.withCredentials = true;
 
 export const useUserStore = create(

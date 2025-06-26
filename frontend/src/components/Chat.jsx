@@ -50,7 +50,7 @@ function Chat({ onBackToHome }) {
     setIsTyping(true);
 
     try {
-      const response = await fetch('http://localhost:3000/chat', {
+      const response = await fetch(`${import.meta.env.VITE_URL || 'http://localhost:3000'}/chat`, {
         method: 'POST',
         body: formData,
       });

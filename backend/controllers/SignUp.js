@@ -205,7 +205,7 @@ const forgotPassword = async (req, res) => {
         user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
         await user.save();
 
-        await sendPasswordResetEmail(user.email, `${process.env.FRONTEND_URL}/reset-password`);
+        await sendPasswordResetEmail(user.email, `${process.env.FRONTEND_URL || "http://localhost:5173"}/reset-password`);
 
         return res.status(200).json({
             success: true,
