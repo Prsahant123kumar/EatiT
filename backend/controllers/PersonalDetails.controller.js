@@ -15,6 +15,7 @@ const EnterPersonaldetails = async (req, res) => {
       otherDisease,
       healthGoal,
       dietPreference,
+      id
     } = req.body;
     const imageLocalPath = req.file?.path;
     console.log("Request file: ",req.file)
@@ -53,7 +54,7 @@ const EnterPersonaldetails = async (req, res) => {
     
     // Continue with the rest of your function...
 
-    const authId = req.user;
+    const authId = id;
     if (!authId) {
       return res.status(401).json({
         success: false,
@@ -75,9 +76,13 @@ const EnterPersonaldetails = async (req, res) => {
       authId,
     }
     if(imageData) PersonalData.image=imageData;
-    const analysisString=await analyzeHealthFromImage(imageData?.url);
-    if(analysisString) PersonalData.documents=analysisString;
-    console.log(analysisString)
+    
+    if(imageData?.url) {
+      const analysisString=await analyzeHealthFromImage(imageData?.url);
+      if(analysisString) PersonalData.documents=analysisString;
+      console.log(analysisString)
+    }
+
     const newUser = await User.create(PersonalData);
 
     return res.status(201).json({

@@ -2,12 +2,20 @@ import { useState, useRef, useEffect } from 'react';
 import './Chat.css';
 import { Image, Send, ArrowLeft } from 'lucide-react';
 
-// Function to parse and format text based on * patterns
+// Improved formatText: handles *, **, ***, newlines, and paragraphs
 const formatText = (text) => {
-  return text
+  if (!text) return "";
+  let formatted = text
     .replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>') // Bold and italic
     .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Bold
     .replace(/\*(.*?)\*/g, '<i>$1</i>'); // Italic
+
+  // Split into paragraphs by double newlines, then replace single newlines with <br>
+  formatted = formatted
+    .split(/\n{2,}/)
+    .map(paragraph => `<p>${paragraph.replace(/\n/g, '<br />')}</p>`)
+    .join('');
+  return formatted;
 };
 
 function Chat({ onBackToHome }) {
@@ -61,7 +69,7 @@ function Chat({ onBackToHome }) {
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage = { sender: 'gemini', text: 'Error: Unable to get a response.', time: formatTime() };
+      const errorMessage = { sender: 'gemini', text: formatText('Error: Unable to get a response.'), time: formatTime(), isFormatted: true };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);

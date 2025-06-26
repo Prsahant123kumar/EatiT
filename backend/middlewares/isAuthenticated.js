@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const isAuthenticated = async (req, res, next) => {
     try {
         const token = req.cookies.token;
-
+        
         // If token is not found
         if (!token) {
             return res.status(401).json({
@@ -16,7 +16,7 @@ const isAuthenticated = async (req, res, next) => {
         const decode = jwt.verify(token, process.env.SECRET_KEY);
 
         // Attach the user ID to the request object
-        req.id = decode.userId;
+        req.user = decode.userId;
 
         // Proceed to the next middleware/handler
         next();

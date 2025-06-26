@@ -793,11 +793,11 @@ const EnterPersonalDetails = ({ isEdit = false }) => {
 
                   <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">
-                      Profile Image
+                      Medical Reports
                     </label>
                     <div className="flex items-center space-x-4">
                       <label className="relative cursor-pointer">
-                        <span className="sr-only">Upload profile image</span>
+                        <span className="sr-only">Upload Medical Reports</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -819,7 +819,7 @@ const EnterPersonalDetails = ({ isEdit = false }) => {
                       </label>
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
-                      Upload a clear photo of yourself (JPEG or PNG)
+                      Upload a clear medical report of yourself (JPEG or PNG)
                     </p>
                   </div>
                 </div>
