@@ -1,14 +1,7 @@
-require('dotenv').config();
-const express = require('express');
 const axios = require('axios');
-const cors = require('cors');
 const { GoogleGenAI } = require('@google/genai');
 
-const app = express();
-const PORT = process.env.PORT || 3002;
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
-
-app.use(cors());
 
 // Fetch top-rated Amazon product for a query
 async function fetchTopAmazonProduct(query) {
@@ -108,7 +101,8 @@ No other text.`;
   }
 }
 
-app.get('/api/search', async (req, res) => {
+// API route handler for searching alternatives
+async function searchAlternatives(req, res) {
   const { q } = req.query;
   if (!q) return res.status(400).json({ error: 'Query parameter `q` is required' });
 
@@ -140,14 +134,11 @@ app.get('/api/search', async (req, res) => {
     console.error('Error in /api/search:', err);
     res.status(500).json({ error: 'Failed to fetch data' });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Alternatives API running on http://localhost:${PORT}`);
-});
+}
 
 module.exports = {
   fetchTopAmazonProduct,
   fetchTopYouTubeRecipe,
-  fetchGeminiAlternatives
+  fetchGeminiAlternatives,
+  searchAlternatives
 };
